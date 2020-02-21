@@ -113,8 +113,8 @@ if __name__ == "__main__":
     testloader = torch.utils.data.DataLoader(test_s,batch_size=4,shuffle=False)
 
     # Load the models
-    path1 = 'net_34.pth'
-    path2 = 'net_334.pth'
+    path1 = 'model/net_34.pth'
+    path2 = 'model/net_334.pth'
 
     net.load_state_dict(torch.load(path1))
     net3.load_state_dict(torch.load(path2))
