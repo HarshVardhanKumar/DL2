@@ -50,6 +50,7 @@ class classify(nn.Module):
 
 net = classify()
 net3 = classify3()
+criterion = nn.CrossEntropyLoss()
 
 def test(model, testloader, model_type):
     """ Training the model using the given dataloader for 1 epoch.
@@ -58,7 +59,6 @@ def test(model, testloader, model_type):
     """
 
     model.eval()
-    avg_loss = AverageMeter("average-loss")
 
     y_gt = []
     y_pred_label = []
@@ -73,9 +73,8 @@ def test(model, testloader, model_type):
         input_s,label_s = data
         if model_type == "nn":
             input_s = torch.flatten(input_s,start_dim=1)
-        input_s,label_s = input_s.to(device), label_s.to(device)
 
-        output_s1 = model(input_s1)
+        output_s1 = model(input_s)
 
         loss = criterion(output_s1, label_s)
         r_l += loss.item()
@@ -120,7 +119,7 @@ if __name__ == "__main__":
     net.load_state_dict(torch.load(path1))
     net3.load_state_dict(torch.load(path2))
     
-    loss, accuracy, gt, pred = test(model_MLP, testloader, 'nn')
+    loss, accuracy, gt, pred = test(net, testloader, 'nn')
     with open("multi-layer-net.txt", 'w') as f:
         f.write("Loss on Test Data : \n".format(loss))
         f.write("Accuracy on Test Data : {}\n".format(accuracy))
@@ -128,7 +127,7 @@ if __name__ == "__main__":
         for idx in range(len(gt)):
             f.write("{},{}\n".format(gt[idx], pred[idx]))
 
-    loss, accuracy,gt, pred = test(model_conv_net, testloader,'cnn')
+    loss, accuracy,gt, pred = test(net3, testloader,'cnn')
     with open("convolution-neural-net.txt", 'w') as f:
         f.write("Loss on Test Data : {}\n".format(loss))
         f.write("Accuracy on Test Data : {}\n".format(accuracy))
